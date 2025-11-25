@@ -34,11 +34,3 @@ class TagRepository(BaseCrudRepository[TagORM]):
         )
         result = await self.db.execute(stmt)
         return result.scalar_one_or_none()
-
-    async def add(self, db_obj: TagORM) -> TagORM:
-        self.db.add(db_obj)
-        await self.db.flush()
-        return db_obj
-
-    async def delete(self, db_obj: TagORM) -> None:
-        await self.db.delete(db_obj)

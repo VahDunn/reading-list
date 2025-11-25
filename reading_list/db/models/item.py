@@ -1,16 +1,17 @@
 from datetime import datetime
 from enum import StrEnum, auto
-from typing import TYPE_CHECKING, List
+from typing import List
 
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import functions as sa_func
+from reading_list.db.models.tag import TagORM
+from reading_list.db.models.user import UserORM
 
 from reading_list.db.models.base import BaseORM
 
-if TYPE_CHECKING:
-    from reading_list.db.models import TagORM, UserORM
+
 
 
 class ItemKind(StrEnum):
@@ -71,10 +72,10 @@ class ItemORM(BaseORM):
         onupdate=sa_func.now(),
         nullable=False,
     )
-    user: Mapped['UserORM'] = relationship(
+    user: Mapped[UserORM] = relationship(
         back_populates='items',
     )
-    tags: Mapped[List['TagORM']] = relationship(
+    tags: Mapped[List[TagORM]] = relationship(
         secondary='item_tags',
         back_populates='items',
     )

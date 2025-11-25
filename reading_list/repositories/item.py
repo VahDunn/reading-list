@@ -113,14 +113,6 @@ class ItemRepository(BaseCrudRepository[ItemORM]):
 
         return items, total
 
-    async def add(self, obj: ItemORM) -> ItemORM:
-        self.db.add(obj)
-        await self.db.flush()
-        return obj
-
-    async def delete(self, obj: ItemORM) -> None:
-        await self.db.delete(obj)
-
     async def get_tags_for_user_by_ids(
         self,
         user_id: int,
