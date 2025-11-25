@@ -9,7 +9,7 @@ from reading_list.repositories.item import ItemRepository
 from reading_list.services.abstract_crud import AbstractCrudService
 
 
-class ItemsService(AbstractCrudService[ItemCreate, ItemUpdate, ItemOut, ItemPage]):
+class ItemsService(AbstractCrudService[ItemCreate, ItemUpdate, ItemOut, ItemFilters]):
     def __init__(self, repo: ItemRepository, user_id: int):
         self.repo = repo
         self.user_id = user_id
@@ -118,7 +118,7 @@ class ItemsService(AbstractCrudService[ItemCreate, ItemUpdate, ItemOut, ItemPage
 
         return self._to_item_out(item)
 
-    async def delete(self, obj_id: int) -> None:
+    async def delete(self, obj_id: int) -> int:
         item = await self.repo.get_item_for_user(
             item_id=obj_id,
             user_id=self.user_id,

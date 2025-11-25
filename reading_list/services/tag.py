@@ -55,7 +55,7 @@ class TagService(AbstractCrudService[TagCreate, TagCreate, TagOut, None]):
         await self.repo.refresh(tag)
         return self._to_tag_out(tag)
 
-    async def delete(self, obj_id: int) -> None:
+    async def delete(self, obj_id: int) -> int:
         tag = await self.repo.get_by_id(obj_id)
         if tag is None or tag.user_id != self.user_id:
             raise HTTPException(

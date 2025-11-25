@@ -4,10 +4,10 @@ from fastapi import Depends, Header, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from reading_list.db.engine import AsyncSessionLocal
-from reading_list.repositories.abstract_crud import AbstractCrudRepository
+from reading_list.repositories.base_crud import BaseCrudRepository
 from reading_list.services.abstract_crud import AbstractCrudService
 
-TRepo = TypeVar('TRepo', bound=AbstractCrudRepository)
+TRepo = TypeVar('TRepo', bound=BaseCrudRepository)
 TService = TypeVar('TService', bound=AbstractCrudService)
 x_user_header = Header(default=None, alias='X-User-Id')
 

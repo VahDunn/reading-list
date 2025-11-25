@@ -8,10 +8,10 @@ from sqlalchemy.orm import joinedload
 from reading_list.db.models.item import (ItemKind, ItemORM, ItemPriority,
                                     ItemStatus)
 from reading_list.db.models.tag import  TagORM
-from reading_list.repositories.abstract_crud import AbstractCrudRepository
+from reading_list.repositories.base_crud import BaseCrudRepository
 
 
-class ItemRepository(AbstractCrudRepository[ItemORM]):
+class ItemRepository(BaseCrudRepository[ItemORM]):
     def __init__(self, db: AsyncSession):
         super().__init__(db)
 

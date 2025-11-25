@@ -4,10 +4,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from reading_list.db.models.tag import TagORM
-from reading_list.repositories.abstract_crud import AbstractCrudRepository
+from reading_list.repositories.base_crud import BaseCrudRepository
 
 
-class TagRepository(AbstractCrudRepository[TagORM]):
+class TagRepository(BaseCrudRepository[TagORM]):
     def __init__(self, db: AsyncSession):
         super().__init__(db)
 

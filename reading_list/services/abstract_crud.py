@@ -18,17 +18,13 @@ class AbstractCrudService(
         FiltersSchema,
     ],
 ):
-    """
-    Базовый сервис с типовыми командами - чтение и CRUD.
-    Конкретные сервисы могут расширять/переопределять поведение.
-    """
 
     @abstractmethod
     async def get_by_id(self, obj_id: int) -> ReadSchema:
         ...
 
     @abstractmethod
-    async def get(self, filters: FiltersSchema | None = None) -> Sequence[ReadSchema]:
+    async def get(self, filters: FiltersSchema | None = None):
         ...
 
     @abstractmethod
