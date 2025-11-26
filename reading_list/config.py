@@ -5,15 +5,15 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    app_env: str = Field("dev", alias="APP_ENV")
-    debug: bool = Field(True, alias="DEBUG")
+    app_env: str = Field(default='dev', alias='APP_ENV')
+    debug: bool = Field(default=True, alias='DEBUG')
 
-    database_url: str = Field(..., alias="DATABASE_URL")
+    database_url: str = Field(..., alias='DATABASE_URL')
 
     model_config = {
-        "env_file": ".env",  # для локального запуска вне Docker
-        "env_file_encoding": "utf-8",
-        "extra": "ignore",
+        'env_file': '.env',  # для локального запуска вне Docker
+        'env_file_encoding': 'utf-8',
+        'extra': 'ignore',
     }
 
 

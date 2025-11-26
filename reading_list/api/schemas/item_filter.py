@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from reading_list.db.models.item import ItemKind, ItemPriority, ItemStatus
 
 
-class ItemFilters(BaseModel):
+class ItemFilter(BaseModel):
     status: ItemStatus | None = None
     kind: ItemKind | None = None
     priority: ItemPriority | None = None

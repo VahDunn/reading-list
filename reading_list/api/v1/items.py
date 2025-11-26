@@ -4,14 +4,14 @@ from fastapi.params import Depends
 from reading_list.api.deps import crud_service_dep
 from reading_list.api.schemas.item import ItemUpdate  # noqa: WPS318, WPS319
 from reading_list.api.schemas.item import ItemCreate, ItemOut, ItemPage
-from reading_list.api.schemas.item_filters import ItemFilters
+from reading_list.api.schemas.item_filter import ItemFilter
 from reading_list.repositories.item import ItemRepository
 from reading_list.services.item import ItemsService
 
 router = APIRouter(tags=['items'])
 
 ItemServiceDep = Depends(crud_service_dep(ItemsService, ItemRepository))
-ItemFiltersDep = Depends(ItemFilters)
+ItemFiltersDep = Depends(ItemFilter)
 
 
 @router.post('', response_model=ItemOut, status_code=status.HTTP_201_CREATED)
@@ -32,7 +32,7 @@ async def get_item(
 
 @router.get('', response_model=ItemPage)
 async def get_items(
-    filters: ItemFilters = ItemFiltersDep,
+    filters: ItemFilter = ItemFiltersDep,
     service: ItemsService = ItemServiceDep,
 ) -> ItemPage:
     return await service.get(filters)

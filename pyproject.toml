@@ -35,16 +35,37 @@ where = ['.']
 include = ['reading_list*']
 
 [tool.flake8]
+max-line-length = 88
 exclude = [
+    '*venv',
+    'build',
+    'dist',
     'alembic',
-    'reading_list/db/seed.py'
+    'reading_list/db/seed.py',
+    'reading_list.egg-info',
+    '.git',
+    '.idea',
 ]
-ignore = [
+ignore = [  # Данные ораничения оспоримы, но в текущем контексте кажутся логичными
     'D100',
     'D101',
     'D102',
     'D103',
     'D104',
+    'D107',
     'DAR101',
     'DAR201',
+    'WPS602',
+    'WPS305',
+    'WPS214',
+    'WPS237',
+    'WPS326'
 ]
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 88

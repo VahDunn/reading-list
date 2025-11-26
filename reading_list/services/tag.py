@@ -11,26 +11,27 @@ class TagService(AbstractCrudService[TagCreate, TagCreate, TagOut, None]):
         self.repo = repo
         self.user_id = user_id
 
-
     async def get_by_id(self, obj_id: int) -> TagOut:
         tag = await self.repo.get_by_id(obj_id)
         if tag is None or tag.user_id != self.user_id:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Tag not found",
+                detail='Tag not found',
             )
         return self._to_tag_out(tag)
 
     async def get(self, filters: None = None) -> list[TagOut]:
         tags = await self.repo.get_for_user(self.user_id)
-        return [self._to_tag_out(t) for t in tags]
+        return [self._to_tag_out(tag) for tag in tags]
 
     async def create(self, payload: TagCreate) -> TagOut:
-        existing = await self.repo.get_by_name_for_user(self.user_id, payload.name)
+        existing = await self.repo.get_by_name_for_user(
+            self.user_id, payload.name
+        )
         if existing:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Tag with this name already exists",
+                detail='Tag with this name already exists',
             )
 
         tag = TagORM(
@@ -47,7 +48,7 @@ class TagService(AbstractCrudService[TagCreate, TagCreate, TagOut, None]):
         if tag is None or tag.user_id != self.user_id:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Tag not found",
+                detail='Tag not found',
             )
 
         tag.name = payload.name
@@ -60,7 +61,7 @@ class TagService(AbstractCrudService[TagCreate, TagCreate, TagOut, None]):
         if tag is None or tag.user_id != self.user_id:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Tag not found",
+                detail='Tag not found',
             )
         await self.repo.delete(tag)
         await self.repo.commit()

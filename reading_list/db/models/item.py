@@ -6,12 +6,10 @@ import sqlalchemy as sa
 from sqlalchemy import ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import functions as sa_func
-from reading_list.db.models.tag import TagORM
-from reading_list.db.models.user import UserORM
 
 from reading_list.db.models.base import BaseORM
-
-
+from reading_list.db.models.tag import TagORM
+from reading_list.db.models.user import UserORM
 
 
 class ItemKind(StrEnum):

@@ -3,8 +3,7 @@ import asyncio
 from sqlalchemy import select
 
 from reading_list.db.engine import AsyncSessionLocal
-from reading_list.db.models.item import (ItemKind, ItemORM, ItemPriority,
-                                         ItemStatus)
+from reading_list.db.models.item import ItemKind, ItemORM, ItemPriority, ItemStatus
 from reading_list.db.models.tag import TagORM
 from reading_list.db.models.user import UserORM
 

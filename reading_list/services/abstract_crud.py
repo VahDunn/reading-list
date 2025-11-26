@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Generic, Sequence, TypeVar
+from typing import Generic, TypeVar
 
-CreateSchema = TypeVar("CreateSchema")
-UpdateSchema = TypeVar("UpdateSchema")
-ReadSchema = TypeVar("ReadSchema")
-FiltersSchema = TypeVar("FiltersSchema")
+CreateSchema = TypeVar('CreateSchema')
+UpdateSchema = TypeVar('UpdateSchema')
+ReadSchema = TypeVar('ReadSchema')
+FiltersSchema = TypeVar('FiltersSchema')
 
 
 class AbstractCrudService(
