@@ -1,9 +1,8 @@
-from fastapi import HTTPException, status
-
 from reading_list.api.schemas.tag import TagCreate, TagOut
 from reading_list.db.models.tag import TagORM
 from reading_list.repositories.tag import TagRepository
 from reading_list.services.abstract_crud import AbstractCrudService
+from reading_list.utils.errors import ConflictError, EntityNotFoundError
 
 
 class TagService(AbstractCrudService[TagCreate, TagCreate, TagOut, None]):
@@ -14,10 +13,7 @@ class TagService(AbstractCrudService[TagCreate, TagCreate, TagOut, None]):
     async def get_by_id(self, obj_id: int) -> TagOut:
         tag = await self.repo.get_by_id(obj_id)
         if tag is None or tag.user_id != self.user_id:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='Tag not found',
-            )
+            raise EntityNotFoundError('Tag not found')
         return self._to_tag_out(tag)
 
     async def get(self, filters: None = None) -> list[TagOut]:
@@ -29,10 +25,7 @@ class TagService(AbstractCrudService[TagCreate, TagCreate, TagOut, None]):
             self.user_id, payload.name
         )
         if existing:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='Tag with this name already exists',
-            )
+            raise ConflictError('Tag with this name already exists')
 
         tag = TagORM(
             user_id=self.user_id,
@@ -46,10 +39,7 @@ class TagService(AbstractCrudService[TagCreate, TagCreate, TagOut, None]):
     async def update(self, obj_id: int, payload: TagCreate) -> TagOut:
         tag: TagORM = await self.repo.get_by_id(obj_id)
         if tag is None or tag.user_id != self.user_id:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='Tag not found',
-            )
+            raise EntityNotFoundError('Tag not found')
 
         tag.name = payload.name
         await self.repo.commit()
@@ -59,10 +49,7 @@ class TagService(AbstractCrudService[TagCreate, TagCreate, TagOut, None]):
     async def delete(self, obj_id: int) -> int:
         tag = await self.repo.get_by_id(obj_id)
         if tag is None or tag.user_id != self.user_id:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='Tag not found',
-            )
+            raise EntityNotFoundError('Tag not found')
         await self.repo.delete(tag)
         await self.repo.commit()
         return obj_id

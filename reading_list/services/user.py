@@ -1,9 +1,8 @@
-from fastapi import HTTPException, status
-
 from reading_list.api.schemas.user import UserCreate, UserOut, UserUpdate
 from reading_list.db.models.user import UserORM
 from reading_list.repositories.user import UserRepository
 from reading_list.services.abstract_crud import AbstractCrudService
+from reading_list.utils.errors import ConflictError, EntityNotFoundError
 
 
 class UserService(
@@ -16,10 +15,7 @@ class UserService(
     async def get_by_id(self, obj_id: int) -> UserOut:
         user = await self.repo.get_by_id(obj_id)
         if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='User not found',
-            )
+            raise EntityNotFoundError('User not found')
         return self._to_user_out(user)
 
     async def get(self, filters: None = None) -> list[UserOut]:
@@ -30,10 +26,7 @@ class UserService(
         email = str(payload.email)
         existing = await self.repo.get_by_email(email)
         if existing:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='User with this email already exists',
-            )
+            raise ConflictError('User with this email already exists')
 
         user = UserORM(
             email=email,
@@ -47,10 +40,7 @@ class UserService(
     async def update(self, obj_id: int, payload: UserUpdate) -> UserOut:
         user = await self.repo.get_by_id(obj_id)
         if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='User not found',
-            )
+            raise EntityNotFoundError('User not found')
 
         user_data = payload.model_dump(exclude_unset=True)
 
@@ -58,10 +48,7 @@ class UserService(
         if new_email is not None:
             existing = await self.repo.get_by_email(new_email)
             if existing and existing.id != obj_id:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail='User with this email already exists',
-                )
+                raise ConflictError('User with this email already exists')
 
         for field, field_value in user_data.items():
             setattr(user, field, field_value)
@@ -73,10 +60,7 @@ class UserService(
     async def delete(self, obj_id: int) -> int:
         user = await self.repo.get_by_id(obj_id)
         if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='User not found',
-            )
+            raise EntityNotFoundError('User not found')
 
         await self.repo.delete(user)
         await self.repo.commit()

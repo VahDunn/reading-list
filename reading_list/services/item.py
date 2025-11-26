@@ -1,11 +1,10 @@
-from fastapi import HTTPException, status
-
 from reading_list.api.schemas.common import PageMeta
 from reading_list.api.schemas.item import ItemCreate, ItemOut, ItemPage, ItemUpdate
 from reading_list.api.schemas.item_filter import ItemFilter
 from reading_list.db.models.item import ItemORM
 from reading_list.repositories.item import ItemRepository
 from reading_list.services.abstract_crud import AbstractCrudService
+from reading_list.utils.errors import EntityNotFoundError, ValidationError
 
 
 class ItemsService(
@@ -23,10 +22,7 @@ class ItemsService(
             with_tags=True,
         )
         if db_item is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=self.not_found_msg,
-            )
+            raise EntityNotFoundError(self.not_found_msg)
         return self._to_item_out(db_item)
 
     async def get(self, filters: ItemFilter | None = None) -> ItemPage:
@@ -69,10 +65,7 @@ class ItemsService(
             with_tags=True,
         )
         if db_item is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=self.not_found_msg,
-            )
+            raise EntityNotFoundError(self.not_found_msg)
 
         payload_dict = payload.model_dump(exclude_unset=True)
         tag_ids = payload_dict.pop('tag_ids', None)
@@ -93,10 +86,7 @@ class ItemsService(
             user_id=self.user_id,
         )
         if db_item is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=self.not_found_msg,
-            )
+            raise EntityNotFoundError(self.not_found_msg)
 
         await self.repo.delete(db_item)
         await self.repo.commit()
@@ -113,10 +103,7 @@ class ItemsService(
             with_tags=True,
         )
         if db_item is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=self.not_found_msg,
-            )
+            raise EntityNotFoundError(self.not_found_msg)
 
         if not tag_ids:
             return self._to_item_out(db_item)
@@ -148,12 +135,8 @@ class ItemsService(
         found_ids = {tag.id for tag in tags}
         missing = set(tag_ids) - found_ids
         if missing:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=(
-                    f'Tags not found or'
-                    f' do not belong to user: {sorted(missing)}'
-                ),
+            raise ValidationError(
+                f'Tags not found or do not belong to user: {sorted(missing)}'
             )
 
         db_item.tags = list(tags)
