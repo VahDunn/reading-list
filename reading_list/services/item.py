@@ -14,6 +14,7 @@ class ItemsService(
     def __init__(self, repo: ItemRepository, user_id: int):
         self.repo = repo
         self.user_id = user_id
+        self.not_found_msg = 'Item not found'
 
     async def get_by_id(self, obj_id: int) -> ItemOut:
         db_item = await self.repo.get_item_for_user(
@@ -24,7 +25,7 @@ class ItemsService(
         if db_item is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail='Item not found',
+                detail=self.not_found_msg,
             )
         return self._to_item_out(db_item)
 
@@ -70,7 +71,7 @@ class ItemsService(
         if db_item is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail='Item not found',
+                detail=self.not_found_msg,
             )
 
         payload_dict = payload.model_dump(exclude_unset=True)
@@ -94,12 +95,42 @@ class ItemsService(
         if db_item is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail='Item not found',
+                detail=self.not_found_msg,
             )
 
         await self.repo.delete(db_item)
         await self.repo.commit()
         return obj_id
+
+    async def remove_tags(
+        self,
+        obj_id: int,
+        tag_ids: list[int],
+    ) -> ItemOut:
+        db_item = await self.repo.get_item_for_user(
+            item_id=obj_id,
+            user_id=self.user_id,
+            with_tags=True,
+        )
+        if db_item is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=self.not_found_msg,
+            )
+
+        if not tag_ids:
+            return self._to_item_out(db_item)
+
+        ids_to_remove = set(tag_ids)
+        db_item.tags = [
+            tag for tag in db_item.tags
+            if tag.id not in ids_to_remove
+        ]
+
+        await self.repo.commit()
+        await self.repo.refresh(db_item, attribute_names=['tags'])
+
+        return self._to_item_out(db_item)
 
     async def _apply_tags_by_ids(
         self,

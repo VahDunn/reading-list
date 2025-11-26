@@ -2,8 +2,13 @@ from fastapi import APIRouter, status
 from fastapi.params import Depends
 
 from reading_list.api.deps import crud_service_dep
-from reading_list.api.schemas.item import ItemUpdate  # noqa: WPS318, WPS319
-from reading_list.api.schemas.item import ItemCreate, ItemOut, ItemPage
+from reading_list.api.schemas.item import (  # noqa: WPS318, WPS319
+    ItemCreate,
+    ItemOut,
+    ItemPage,
+    ItemTagsRemove,
+    ItemUpdate,
+)
 from reading_list.api.schemas.item_filter import ItemFilter
 from reading_list.repositories.item import ItemRepository
 from reading_list.services.item import ItemsService
@@ -53,3 +58,14 @@ async def delete_item(
     service: ItemsService = ItemServiceDep,
 ) -> int:
     return await service.delete(item_id)
+
+
+@router.delete(
+    '/{item_id}/tags', response_model=ItemOut, status_code=status.HTTP_200_OK
+)
+async def remove_tags_from_item(
+    item_id: int,
+    payload: ItemTagsRemove,
+    service: ItemsService = ItemServiceDep,
+) -> ItemOut:
+    return await service.remove_tags(item_id, payload.tag_ids)

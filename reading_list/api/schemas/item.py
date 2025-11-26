@@ -51,3 +51,7 @@ class ItemOut(BaseModel):
 
 class ItemPage(Page[ItemOut]):
     """Конкретный класс для страницы Item."""
+
+
+class ItemTagsRemove(BaseModel):
+    tag_ids: list[int]

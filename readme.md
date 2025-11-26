@@ -174,12 +174,26 @@ curl --location --request DELETE 'http://0.0.0.0:8000/api/v1/users/3'
 
 DELETE на любую сущность возвращает id удаленного объекта (опционально)
 
+Для удаления конкретных тегов
+
+
+```
+curl --location --request DELETE 'http://0.0.0.0:8000/api/v1/items/1/tags' \
+--header 'Content-Type: application/json' \
+--data '{
+  "tag_ids": [2]
+}'
+```
+
+Возвращается полный объект с обновленным списком тегов
 
 Юнит-тесты
 
 Перед запуском 
 
 ```
+python -m venv venv
+source venv/bin/activate
  pip install .'[dev]'
 ```
 

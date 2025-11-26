@@ -3,13 +3,11 @@ from datetime import datetime, timezone
 import pytest
 from fastapi import HTTPException, status
 
+from reading_list.api.schemas.user import UserCreate, UserUpdate
 from reading_list.db.models import item as item_model
 from reading_list.db.models import tag as tag_model
 from reading_list.db.models.user import UserORM
-
-from reading_list.api.schemas.user import UserCreate, UserUpdate
 from reading_list.services.user import UserService
-
 
 
 class FakeUserRepository:
