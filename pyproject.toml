@@ -17,6 +17,7 @@ dependencies = [
     'sqlalchemy[asyncio]>=2.0.29',
     'asyncpg>=0.29.0',
     'pydantic>=2.6.3',
+    'pydantic[email]>=2.6.3',
     'pydantic-settings>=2.2.1',
     'alembic>=1.13.1',
     'python-dotenv>=1.0.1',
@@ -24,6 +25,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+    'aiosqlite>=0.20.0',
     'pytest>=7.4.0',
     'pytest-asyncio>=0.23.2',
     'httpx>=0.24.1',
@@ -36,6 +38,7 @@ include = ['reading_list*']
 
 [tool.flake8]
 max-line-length = 88
+max-local-variables = 8
 exclude = [
     '*venv',
     'build',
@@ -45,6 +48,7 @@ exclude = [
     'reading_list.egg-info',
     '.git',
     '.idea',
+    'tests',
 ]
 ignore = [  # Данные ораничения оспоримы, но в текущем контексте кажутся логичными
     'D100',
@@ -53,6 +57,7 @@ ignore = [  # Данные ораничения оспоримы, но в тек
     'D103',
     'D104',
     'D107',
+    'D204',
     'DAR101',
     'DAR201',
     'WPS602',

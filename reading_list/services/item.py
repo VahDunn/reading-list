@@ -76,7 +76,7 @@ class ItemsService(
         payload_dict = payload.model_dump(exclude_unset=True)
         tag_ids = payload_dict.pop('tag_ids', None)
 
-        for field, field_val in payload_dict.items_list():
+        for field, field_val in payload_dict.items():
             setattr(db_item, field, field_val)
 
         await self._apply_tags_by_ids(db_item, tag_ids)

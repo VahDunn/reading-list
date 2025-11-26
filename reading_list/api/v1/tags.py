@@ -35,9 +35,9 @@ async def get_tag(
     return await service.get_by_id(tag_id)
 
 
-@router.delete('/{tag_id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/{tag_id}', status_code=status.HTTP_200_OK)
 async def delete_tag(
     tag_id: int,
     service: TagService = TagServiceDep,
-) -> None:
+) -> int:
     return await service.delete(tag_id)

@@ -30,7 +30,7 @@ class ItemRepository(BaseCrudRepository[ItemORM]):
             stmt = stmt.options(joinedload(ItemORM.tags))
 
         res = await self.db.execute(stmt)
-        return res.scalar_one_or_none()
+        return res.unique().scalar_one_or_none()
 
     async def get_with_filters(
         self,
